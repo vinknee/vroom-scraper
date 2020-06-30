@@ -12,7 +12,6 @@ def main():
     parser.add_argument('--urls', help='file for vroom urls to scrape', default=os.getenv('HOME') + '/vroom_urls.txt')
     parser.add_argument('--mg_url', help='base mailgun api url', default=os.getenv('MG_URL'))
     parser.add_argument('--mg_key', help='mailgun api key', default=os.getenv('MG_API'))
-    parser.add_argument('--affirmative', help='send email if still \'Available Soon\' or \'Pending\'', action='store_true')
     parser.add_argument('--emails', help='email for notifications')
 
     args = parser.parse_args()
@@ -42,6 +41,16 @@ def main():
         for u in status[s]: 
             msg += f"{s}: {u}\n" 
 
+
+    ret = requests.post(f"https://api.mailgun.net/v3/{args.mg_url}/messages", auth=("api", args.mg_key), 
+            data={
+                "from"      : f"Vroom Watcher <mailgun@{args.mg_url}>",
+                "to"        : args.emails.split(','),
+                "subject"   : "Car Updates!",
+                "text"      : msg
+            })
+    
     print(msg)
+
 if __name__ == "__main__":
     main()
