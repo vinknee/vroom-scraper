@@ -11,7 +11,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--urls', help='file for vroom urls to scrape', default=os.getenv('HOME') + '/vroom_urls.txt')
     parser.add_argument('--mg_url', help='base mailgun api url', default=os.getenv('MG_URL'))
-    parser.add_argument('--mg_key', help='mailgun api key', default=os.getenv('MG_API'))
+    parser.add_argument('--mg_key', help='mailgun api key', default=os.getenv('MG_KEY'))
     parser.add_argument('--emails', help='email for notifications')
 
     args = parser.parse_args()
@@ -26,12 +26,12 @@ def main():
         if u == '': continue
         resp = requests.get(u)
         
-        if re.findall('Sale Pending', resp.text):
+        if re.findall('Sale Pending', resp.text, re.IGNORECASE):
             status['Sale Pending'].append(u)
-        elif re.findall('Start Purchase', resp.text):
-            status['Available for purchase!'].append(u)
-        elif re.findall('Available Soon', resp.text):
+        elif re.findall('Available Soon', resp.text, re.IGNORECASE):
             status['Not Available Yet'].append(u)
+        elif re.findall('Start Purchase', resp.text, re.IGNORECASE):
+            status['Available for purchase!'].append(u)
         else:
             status['Unkown!'].append(u)
 
