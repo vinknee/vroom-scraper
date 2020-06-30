@@ -1,2 +1,4 @@
 # vroom-scraper
-Scrape Vroom periodically to see if car is available
+Scrape Vroom periodically to see if a car is available
+
+Currently Vroom.com doesn't have push notifications if a car marked as "available soon" becomes available.
