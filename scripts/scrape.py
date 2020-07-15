@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -13,6 +13,7 @@ def main():
     parser.add_argument('--mg_url', help='base mailgun api url', default=os.getenv('MG_URL'))
     parser.add_argument('--mg_key', help='mailgun api key', default=os.getenv('MG_KEY'))
     parser.add_argument('--emails', help='email for notifications')
+    parser.add_argument('--affirmative', help='send email even if cars are not available', action='store_true')
 
     args = parser.parse_args()
 
@@ -28,6 +29,8 @@ def main():
         
         if re.findall('Sale Pending', resp.text, re.IGNORECASE):
             status['Sale Pending'].append(u)
+        elif re.findall('Car Not Found', resp.text, re.IGNORECASE):
+            status['Not Found! Delisted?'].append(u)
         elif re.findall('Available Soon', resp.text, re.IGNORECASE):
             status['Not Available Yet'].append(u)
         elif re.findall('Start Purchase', resp.text, re.IGNORECASE):
@@ -42,7 +45,8 @@ def main():
             msg += f"{s}: {u}\n" 
 
 
-    ret = requests.post(f"https://api.mailgun.net/v3/{args.mg_url}/messages", auth=("api", args.mg_key), 
+    if args.affirmative or len(status['Available for purchase!']):
+        ret = requests.post(f"https://api.mailgun.net/v3/{args.mg_url}/messages", auth=("api", args.mg_key), 
             data={
                 "from"      : f"Vroom Watcher <mailgun@{args.mg_url}>",
                 "to"        : args.emails.split(','),
