@@ -1,6 +1,6 @@
 # vroom-scraper
-Scrape Vroom periodically to see if a car is available
+Scrape Vroom.com periodically to see if a vehicle is available
 
-Currently Vroom.com doesn't have push notifications if a car marked as "available soon" becomes available.
+At the time of the creation, Vroom.com did not have push notifications when a vehicle marked as "available soon" became available.
 
-This is just a very crude way to periodically check a list of a car is marked as available if you stick it on crontab.
+This is just a very crude way to periodically check a list of cars to see if any are marked as available if you stick it on crontab.
